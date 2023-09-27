@@ -1,0 +1,8 @@
+todo.txt
+venv
+.idea
+__pycache__
+*.log
+useful.txt
+services
+.env
