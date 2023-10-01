@@ -1,7 +1,7 @@
 from sqlalchemy.orm import relationship
 
 from db.db_connection import Base
-from sqlalchemy import Integer, Column, Text, Enum, ForeignKey
+from sqlalchemy import Integer, Column, Text, Enum, ForeignKey, Date
 
 from utils.enums import StepNameChoice
 
@@ -28,6 +28,7 @@ class Post(Base):
     link = Column(Text, nullable=False)
     title = Column(Text, nullable=False)
     short_description = Column(Text, nullable=False)
+    success_date = Column(Date, nullable=True, default=None)
 
     translated_title = Column(Text, nullable=True, default=None)
     translated_short_description = Column(Text, nullable=True, default=None)

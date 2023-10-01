@@ -10,10 +10,10 @@ from utils.schemas import NewsSchema
 router = APIRouter(prefix=f"/api/{SERVICE_NAME}")
 
 @router.post(f"/publish_news/", status_code=204)
-async def publish_news(news: list[NewsSchema], session: AsyncSession = Depends(get_async_session)):
+async def publish_news(news: list[NewsSchema]):
     """
     news: Список новостей об одной футбольной команде с ее веб-страницы.
     """
-    bot_handler = TelegramBotHandler(CHANNEL_NAME, news, session)
+    bot_handler = TelegramBotHandler(CHANNEL_NAME, news)
     await bot_handler.handle_posting_news()
     return
