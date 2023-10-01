@@ -25,7 +25,6 @@ class TelegramBotHandler:
         self.semaphore = asyncio.Semaphore(6)
 
     async def handle_posting_news(self):
-        print("СКОЛЬКО У НАС ПОСТОВ??", len(self.news))
         tasks = [asyncio.create_task(self.send_message(post)) for post in self.news]
         await asyncio.gather(*tasks)
         if self.NEWS_POSTED:
@@ -70,7 +69,7 @@ class TelegramBotHandler:
 
     async def set_success_date(self) -> None:
         async with async_session_maker() as session:
-            posts = await self._get_posts_from_db(self.NEWS_WITH_ERRORS)
+            posts = await self._get_posts_from_db(self.NEWS_POSTED)
             for post in posts:
                 post.success_date = date.today()
             session.add_all(posts)
