@@ -13,6 +13,9 @@ DB_PORT = os.getenv("DB_PORT")
 
 SERVICE_NAME = "telegram"
 
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+CHANNEL_NAME = os.getenv("CHANNEL_NAME")
+
 logger = logging.getLogger("logger")
 logger.setLevel(logging.INFO)
 if not logger.handlers:
