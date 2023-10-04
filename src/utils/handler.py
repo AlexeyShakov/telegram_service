@@ -15,21 +15,21 @@ from telebot.async_telebot import AsyncTeleBot
 
 class TelegramBotHandler:
     # Логику по работе с БД можно вынести в отдельных handler
-    NEWS_WITH_ERRORS = []
-    NEWS_POSTED = []
     def __init__(self, channel_name: str, news: list[NewsSchema]) -> None:
         self.channel_name = channel_name
         self.news = news
         self.bot = AsyncTeleBot(BOT_TOKEN)
         self.event_loop = asyncio.get_running_loop()
         self.semaphore = asyncio.Semaphore(3)
+        self.news_with_errors = []
+        self.news_posted = []
 
     async def handle_posting_news(self):
         tasks = [asyncio.create_task(self.send_message(post)) for post in self.news]
         await asyncio.gather(*tasks)
-        if self.NEWS_POSTED:
+        if self.news_posted:
             await self.set_success_date()
-        if self.NEWS_WITH_ERRORS:
+        if self.news_with_errors:
             await self.handle_news_with_errors()
 
     async def send_message(self, post: NewsSchema) -> None:
@@ -37,12 +37,12 @@ class TelegramBotHandler:
         try:
             async with self.semaphore:
                 await self.bot.send_message(self.channel_name, message)
-                self.NEWS_POSTED.append(post)
+                self.news_posted.append(post)
                 # Делаем задержку специально, чтобы не было 429 ошибки
                 await asyncio.sleep(10)
         except Exception:
             logger.exception("Ошибка получена при попытке отправить в телеграмм")
-            self.NEWS_WITH_ERRORS.append(post)
+            self.news_with_errors.append(post)
 
     async def _get_message(self, post: NewsSchema) -> str:
         async with aiofiles.open('message_template.html', mode='r') as f:
@@ -60,7 +60,7 @@ class TelegramBotHandler:
 
     async def handle_news_with_errors(self) -> None:
         async with async_session_maker() as session:
-            posts = await self._get_posts_from_db(self.NEWS_WITH_ERRORS)
+            posts = await self._get_posts_from_db(self.news_with_errors)
             query = select(Error).where(Error.step == StepNameChoice.SENDING_TO_TELEGRAM.name)
             result = await session.execute(query)
             error = result.scalars().first()
@@ -71,7 +71,7 @@ class TelegramBotHandler:
 
     async def set_success_date(self) -> None:
         async with async_session_maker() as session:
-            posts = await self._get_posts_from_db(self.NEWS_POSTED)
+            posts = await self._get_posts_from_db(self.news_posted)
             for post in posts:
                 post.success_date = date.today()
             session.add_all(posts)
