@@ -22,7 +22,7 @@ class TelegramBotHandler:
         self.news = news
         self.bot = AsyncTeleBot(BOT_TOKEN)
         self.event_loop = asyncio.get_running_loop()
-        self.semaphore = asyncio.Semaphore(6)
+        self.semaphore = asyncio.Semaphore(3)
 
     async def handle_posting_news(self):
         tasks = [asyncio.create_task(self.send_message(post)) for post in self.news]
@@ -38,6 +38,8 @@ class TelegramBotHandler:
             async with self.semaphore:
                 await self.bot.send_message(self.channel_name, message)
                 self.NEWS_POSTED.append(post)
+                # Делаем задержку специально, чтобы не было 429 ошибки
+                await asyncio.sleep(10)
         except Exception:
             logger.exception("Ошибка получена при попытке отправить в телеграмм")
             self.NEWS_WITH_ERRORS.append(post)
