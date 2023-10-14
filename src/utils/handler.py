@@ -5,11 +5,11 @@ import html2text
 import aiofiles as aiofiles
 from sqlalchemy import select
 
-from config import BOT_TOKEN, logger
-from db.db_connection import async_session_maker
-from db.models import Error, Post
-from utils.enums import StepNameChoice
-from utils.schemas import NewsSchema
+from src.config import BOT_TOKEN, logger
+from src.db.db_connection import async_session_maker
+from src.db.models import Error, Post
+from src.utils.enums import StepNameChoice
+from src.utils.schemas import NewsSchema
 from telebot.async_telebot import AsyncTeleBot
 
 
@@ -25,6 +25,7 @@ class TelegramBotHandler:
         self.news_posted = []
 
     async def handle_posting_news(self):
+        print("Я туууууууууууут")
         tasks = [asyncio.create_task(self.send_message(post)) for post in self.news]
         await asyncio.gather(*tasks)
         if self.news_posted:
@@ -45,7 +46,7 @@ class TelegramBotHandler:
             self.news_with_errors.append(post)
 
     async def _get_message(self, post: NewsSchema) -> str:
-        async with aiofiles.open('message_template.html', mode='r') as f:
+        async with aiofiles.open('src/message_template.html', mode='r') as f:
             content = await f.read()
             message = content.format(
                 translated_title=post.translated_title,

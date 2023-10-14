@@ -1,10 +1,8 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from config import SERVICE_NAME, CHANNEL_NAME
-from db.db_connection import get_async_session
-from utils.handler import TelegramBotHandler
-from utils.schemas import NewsSchema
+from .config import SERVICE_NAME, CHANNEL_NAME
+from src.utils.handler import TelegramBotHandler
+from src.utils.schemas import NewsSchema
 
 
 router = APIRouter(prefix=f"/api/{SERVICE_NAME}")

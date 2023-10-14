@@ -1,9 +1,9 @@
 from sqlalchemy.orm import relationship
 
-from db.db_connection import Base
+from .db_connection import Base
 from sqlalchemy import Integer, Column, Text, Enum, ForeignKey, Date
 
-from utils.enums import StepNameChoice
+from src.utils.enums import StepNameChoice
 
 
 class Error(Base):
