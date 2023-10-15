@@ -23,7 +23,7 @@ class TelegramServicer(telegram_pb2_grpc.NewsTelegramServicer):
     async def _validate_news(self, news: telegram_pb2.TranslatedNews) -> Optional[list[NewsSchema]]:
         try:
             return [
-                NewsSchema(id=int(post.id["id"]), link=post.link["link"], translated_title=post.translated_title["translated_title"],
+                NewsSchema(id=post.id["id"], link=post.link["link"], translated_title=post.translated_title["translated_title"],
                            translated_short_description=post.translated_short_description["translated_short_description"])
                 for post in news.news]
         except Exception as e:
