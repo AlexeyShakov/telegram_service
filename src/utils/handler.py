@@ -25,7 +25,6 @@ class TelegramBotHandler:
         self.news_posted = []
 
     async def handle_posting_news(self):
-        print("Я туууууууууууут")
         tasks = [asyncio.create_task(self.send_message(post)) for post in self.news]
         await asyncio.gather(*tasks)
         if self.news_posted:
