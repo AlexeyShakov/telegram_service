@@ -35,3 +35,7 @@ if not console_logger.handlers:
     console_logger.addHandler(console_handler)
 
 GRPC_TRANSLATION_PORT = os.getenv("GRPC_TRANSLATION_PORT")
+
+TELEGRAM_QUEUE = os.getenv("TELEGRAM_QUEUE")
+RABBITMQ_USER = os.getenv("RABBITMQ_USER")
+RABBITMQ_PASS = os.getenv("RABBITMQ_PASS")
