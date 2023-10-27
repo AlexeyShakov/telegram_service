@@ -4,7 +4,7 @@ from typing import Optional
 from grpc_service import telegram_pb2, telegram_pb2_grpc
 import grpc
 
-from src.config import logger, console_logger, GRPC_TRANSLATION_PORT, CHANNEL_NAME
+from src.config import logger, console_logger, CHANNEL_NAME, GRPC_TELEGRAM_PORT
 from src.utils.schemas import NewsSchema
 from src.utils.handler import TelegramBotHandler
 
@@ -35,7 +35,7 @@ async def serve():
     console_logger.info("Grpc-сервер поднят")
     server = grpc.aio.server()
     telegram_pb2_grpc.add_NewsTelegramServicer_to_server(TelegramServicer(), server)
-    server.add_insecure_port(f"[::]:{GRPC_TRANSLATION_PORT}")
+    server.add_insecure_port(f"[::]:{GRPC_TELEGRAM_PORT}")
     await server.start()
     await server.wait_for_termination()
 
